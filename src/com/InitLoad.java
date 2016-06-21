@@ -8,6 +8,11 @@ package com;
 import lib.XWord2Text;
 import lib.Word2Text;
 import lib.XWordToHtml;
+import lib.OpenTextFile;
+import lib.RegexFile;
+import java.io.*;
+import lib.FieldsConfig;
+import lib.MySQLInsert;
 
 /**
  *
@@ -36,6 +41,7 @@ public class InitLoad extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,6 +81,13 @@ public class InitLoad extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setText("HTMLRegex");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,6 +95,7 @@ public class InitLoad extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton5)
                     .addComponent(jButton4)
                     .addComponent(jButton3)
                     .addGroup(layout.createSequentialGroup()
@@ -104,7 +118,9 @@ public class InitLoad extends javax.swing.JFrame {
                 .addComponent(jButton3)
                 .addGap(29, 29, 29)
                 .addComponent(jButton4)
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addComponent(jButton5)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
@@ -113,7 +129,7 @@ public class InitLoad extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         XWord2Text wt = new XWord2Text();
-        String str = wt.XWord2TextConverter("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/Test/test.docx");
+        String str = wt.XWord2TextConverter("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -123,18 +139,67 @@ public class InitLoad extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         Word2Text wt = new Word2Text();
-        String str = wt.ConvertWord2Text("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/Test/test.doc");
+        String str = wt.ConvertWord2Text("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         XWordToHtml wt = new XWordToHtml();
-        String str = wt.XWordToHtmlConverter("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/Test/test.docx");
+        wt.XWordToHtmlConverter("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         XWord2Text wt = new XWord2Text();
-        wt.XWord("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/Test/ksheet.16389.Orient Power Phase 3.docx");
+        wt.XWord("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        String dirPath = "/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageHTML";
+        
+        // list files to be processed as array buffered
+        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/imanTest");
+        File[] listOfFiles = folder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                OpenTextFile otf = new OpenTextFile();
+                
+                String filePath = listOfFiles[i].getPath();
+                String htm = otf.OpenHTML(filePath);
+
+                // create field arrays
+                
+                RegexFile rf = new RegexFile();
+                // \p{Alpha} \p{IsAlphabetic} (?U)
+                // ([()</\w\s\"#;&=\-:\.,>\p{L}]*)
+                String regexMatch = "([\\p{l}()</\\w\\s\"#&;=\\-:\\.,>]*)";
+                
+                FieldsConfig fc = new FieldsConfig(); 
+                String[][] fieldsArray = fc.FieldsArray();
+                
+                for (int n = 0; n < fieldsArray.length; n++) {
+                    String regex = fieldsArray[i][1] + regexMatch + fieldsArray[i][2];
+
+                    fieldsArray[n][3] = rf.getMatch(htm, regex);
+                }
+
+                for (int x = 0; x < fieldsArray.length; x++) {
+                    fieldsArray[x][3] = rf.cleanField(fieldsArray[x][3]);
+                }
+                //write matches to sql
+                String tableName = "";
+                MySQLInsert mysi = new MySQLInsert();
+                String sqlInsert = mysi.SqlInsertPrepare(fieldsArray, tableName);
+                try {
+                    mysi.SqlInsert(sqlInsert);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+                } else if (listOfFiles[i].isDirectory()) {
+                    System.out.println("The subdirectory is not being opened:" + listOfFiles[i].getName());
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -176,6 +241,7 @@ public class InitLoad extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
