@@ -48,7 +48,7 @@ public class XWord2Text {
             is = new FileInputStream(filePath);
             XWPFDocument document = new XWPFDocument(is);
             extractor = new XWPFWordExtractor(document);
-            str = extractor.getText();
+            str = extractor.toString();
 
         } catch (final Exception ex) {
 

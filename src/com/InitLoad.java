@@ -13,6 +13,9 @@ import lib.RegexFile;
 import java.io.*;
 import lib.FieldsConfig;
 import lib.MySQLInsert;
+import org.apache.commons.io.*;
+import java.util.Iterator;
+//import javax.swing.*;
 
 /**
  *
@@ -153,50 +156,44 @@ public class InitLoad extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        String dirPath = "/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageHTML";
         
+        String tableName = "iManageDocs";
         // list files to be processed as array buffered
-        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/imanTest");
-        File[] listOfFiles = folder.listFiles();
+        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocsHtml");
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                OpenTextFile otf = new OpenTextFile();
-                
-                String filePath = listOfFiles[i].getPath();
-                String htm = otf.OpenHTML(filePath);
+        Iterator it = FileUtils.iterateFiles(folder, null, false);
+        while(it.hasNext()){
+            OpenTextFile otf = new OpenTextFile();
 
-                // create field arrays
-                
-                RegexFile rf = new RegexFile();
-                // \p{Alpha} \p{IsAlphabetic} (?U)
-                // ([()</\w\s\"#;&=\-:\.,>\p{L}]*)
-                String regexMatch = "([\\p{l}()</\\w\\s\"#&;=\\-:\\.,>]*)";
-                
-                FieldsConfig fc = new FieldsConfig(); 
-                String[][] fieldsArray = fc.FieldsArray();
-                
-                for (int n = 0; n < fieldsArray.length; n++) {
-                    String regex = fieldsArray[i][1] + regexMatch + fieldsArray[i][2];
+            String filePath = (((File) it.next()).getAbsolutePath());
+            String htm = otf.OpenHTML(filePath);
 
-                    fieldsArray[n][3] = rf.getMatch(htm, regex);
-                }
+            // create field arrays
 
-                for (int x = 0; x < fieldsArray.length; x++) {
-                    fieldsArray[x][3] = rf.cleanField(fieldsArray[x][3]);
-                }
-                //write matches to sql
-                String tableName = "";
-                MySQLInsert mysi = new MySQLInsert();
-                String sqlInsert = mysi.SqlInsertPrepare(fieldsArray, tableName);
-                try {
-                    mysi.SqlInsert(sqlInsert);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                
-                } else if (listOfFiles[i].isDirectory()) {
-                    System.out.println("The subdirectory is not being opened:" + listOfFiles[i].getName());
+            RegexFile rf = new RegexFile();
+            // \p{Alpha} \p{IsAlphabetic} (?U)
+            // ([()</\w\s\"#;&=\-:\.,>\p{L}]*)
+            String regexMatch = "([$@\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]*)";
+
+            FieldsConfig fc = new FieldsConfig(); 
+            String[][] fieldsArray = fc.FieldsArray();
+
+            for (int n = 0; n < fieldsArray.length; n++) {
+                String regex = fieldsArray[n][1] + regexMatch + fieldsArray[n][2];
+
+                fieldsArray[n][3] = rf.getMatch(htm, regex);
+            }
+
+            for (int x = 0; x < fieldsArray.length; x++) {
+                fieldsArray[x][3] = rf.cleanField(fieldsArray[x][3]);
+            }
+            //write matches to sql
+            MySQLInsert mysi = new MySQLInsert();
+            String sqlInsert = mysi.SqlInsertPrepare(fieldsArray, tableName);
+            try {
+                mysi.SqlInsert(sqlInsert);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }//GEN-LAST:event_jButton5ActionPerformed

@@ -23,12 +23,12 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
-import org.apache.poi.xwpf.converter.xhtml.XHTMLConverter;
+//import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
+//import org.apache.poi.xwpf.converter.xhtml.XHTMLConverter;
 
 public class XWordToHtml {
     
-    public String XWordToHtmlConverter(String filePath) {
+    public void XWordToHtmlConverter(String filePath) {
 
         File file = null;
         FileInputStream fis = null;
@@ -43,16 +43,15 @@ public class XWordToHtml {
             is = new FileInputStream(filePath);
 
             XWPFDocument document = new XWPFDocument(is);
-//            extractor = new XWPFWordExtractor(document);
-//            str = extractor.getText();
+            extractor = new XWPFWordExtractor(document);
+            str = extractor.getText();
 
             XHTMLOptions options = XHTMLOptions.create();
  
             // 3) Convert XWPFDocument to HTML
             OutputStream out = new FileOutputStream(new File(
-                    "html/HelloWorld.html"));
+                    "/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/testHtml.html"));
             XHTMLConverter.getInstance().convert(document, out, options);
-           
 
         } catch (final Exception ex) {
 
@@ -73,6 +72,5 @@ public class XWordToHtml {
                 e.printStackTrace();
             }
         }
-        return str;
     }   
 }
