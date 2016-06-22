@@ -76,13 +76,13 @@ public class FieldsConfig {
                 fieldsArray[10][3] = "";
                 
                 fieldsArray[11][0] = "Referrer";
-                fieldsArray[11][1] = "Who\\s*referred\\s*this\\s*client\\s*to\\s*us\\?";
-                fieldsArray[11][2] = "Money\\s*Check-Point\\(Phase1\\):";
+                fieldsArray[11][1] = "Who\\s*referred this client to us\\?";
+                fieldsArray[11][2] = "Money\\s*Check-point \\(Phase1\\):";
                 fieldsArray[11][3] = "";                
 
                 fieldsArray[12][0] = "Init_Budget";
-                fieldsArray[12][1] = "Money\\s*Check-Point\\s\\(Phase1\\):";
-                fieldsArray[12][2] = "Conflict\\s*Checks\\s*Done\\?";
+                fieldsArray[12][1] = "Money\\s*Check-point\\s\\(Phase1\\):";
+                fieldsArray[12][2] = "Conflict\\s*Checks Done\\?";
                 fieldsArray[12][3] = "";
 
                 fieldsArray[13][0] = "Originator";
@@ -96,7 +96,7 @@ public class FieldsConfig {
                 fieldsArray[14][3] = "";
                 
                 fieldsArray[15][0] = "Investigator";
-                fieldsArray[15][1] = "Senior\\s*Investigator:[\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]Investigator:";
+                fieldsArray[15][1] = "Senior\\s*Investigator:[\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]*Investigator:";
                 fieldsArray[15][2] = "Subs:";
                 fieldsArray[15][3] = "";
                 
