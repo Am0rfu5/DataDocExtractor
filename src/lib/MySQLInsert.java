@@ -9,6 +9,7 @@ package lib;
 //import com.mysql.jdbc.*;
 //import org.gjt.mm.mysql.Driver;
 import java.sql.*;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
@@ -16,7 +17,7 @@ import java.sql.*;
  */
 public class MySQLInsert {
     
-    public void SqlInsert(String sqlInsert) throws Exception {
+    public void SqlInsert(String sqlInsert, String identifier) throws Exception {
         // create a mysql database connection
         Statement statement = null;
         String myDriver = "com.mysql.jdbc.Driver";
@@ -29,7 +30,10 @@ public class MySQLInsert {
             statement = conn.createStatement();
             
             try {
-                statement.executeUpdate(sqlInsert);                        
+                int sqlExecInsert = statement.executeUpdate(sqlInsert);
+//                System.out.println("Insert returned: " + (Integer.toString(sqlExecInsert)));
+            } catch (Exception e) {
+                throw new Exception("Error for field file: " + identifier + " with sql insert: " + sqlInsert, e);
             } finally {
                 statement.close();
             }
@@ -39,7 +43,7 @@ public class MySQLInsert {
         }
     }
     
-    public String SqlInsertPrepare(String[][] fieldsArray, String tableName) {
+    public String SqlInsertPrepare(String[][] fieldsArray, String tableName, String fileName) {
         String sqlInsert = "insert into " + tableName;
         // Loop through fields
         String sqlInsertFields = "";
@@ -47,20 +51,24 @@ public class MySQLInsert {
             if (!"".equals(sqlInsertFields)) {
                 sqlInsertFields = sqlInsertFields + ',';
             }
-            sqlInsertFields = sqlInsertFields + "'" + fieldsArray[i][0] +"'";
+            sqlInsertFields = sqlInsertFields  + fieldsArray[i][0];
         }
-        sqlInsertFields = sqlInsertFields.replaceAll("\\\'", "");
-        
+
+        String curFieldValue = "";
         String sqlInsertValues = "";
         for (int x=0; x < fieldsArray.length; x++) {
             if (!"".equals(sqlInsertValues)) {
                 sqlInsertValues = sqlInsertValues + ',';
             }
+            
+            curFieldValue = fieldsArray[x][3];            
+            if (curFieldValue != null) {
+                curFieldValue = curFieldValue.replaceAll("'", "");
+            }
 
-            sqlInsertValues = sqlInsertValues + "'" + fieldsArray[x][3] +"'";
+            sqlInsertValues = sqlInsertValues + "'" + curFieldValue + "'";
         }
-        
-        sqlInsert = sqlInsert + "(" + sqlInsertFields +") Values ("+ sqlInsertValues + ");";
+        sqlInsert = sqlInsert + "(File_Name," + sqlInsertFields +") Values ('"+ fileName +" '," + sqlInsertValues + ");";
         
         return sqlInsert;
     }

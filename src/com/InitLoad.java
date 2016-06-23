@@ -173,15 +173,18 @@ public class InitLoad extends javax.swing.JFrame {
 //        String tableName = "iManageTEST";
         // list files to be processed as array buffered
 //        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/imanTest");
-        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/testhtml");
+        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageHTML");
 
         Iterator it = FileUtils.iterateFiles(folder, null, false);
         while(it.hasNext()){
             OpenTextFile otf = new OpenTextFile();
 
-            String filePath = (((File) it.next()).getAbsolutePath());
+            File  htmlFile = (((File) it.next()));
+            String filePath = htmlFile.getAbsolutePath();
+            String fileName = htmlFile.getName();
+            fileName = fileName.replace(".html","");
+            
             String htm = otf.OpenHTML(filePath);
-
             // create field arrays
 
             RegexFile rf = new RegexFile();
@@ -203,9 +206,9 @@ public class InitLoad extends javax.swing.JFrame {
             }
             //write matches to sql
             MySQLInsert mysi = new MySQLInsert();
-            String sqlInsert = mysi.SqlInsertPrepare(fieldsArray, tableName);
+            String sqlInsert = mysi.SqlInsertPrepare(fieldsArray, tableName, fileName);
             try {
-                mysi.SqlInsert(sqlInsert);
+                mysi.SqlInsert(sqlInsert, fileName);
             } catch (Exception e) {
                 e.printStackTrace();
             }

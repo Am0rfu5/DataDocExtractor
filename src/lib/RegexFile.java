@@ -16,6 +16,7 @@ import java.net.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import org.jsoup.safety.*;
 
 /**
  *
@@ -23,7 +24,7 @@ import org.jsoup.select.*;
  */
 public class RegexFile {
     public String getMatch(String strHtml,String regex) {
-        String strMatch = null;
+        String strMatch = "";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(strHtml);
         if (matcher.find()) {
@@ -36,8 +37,28 @@ public class RegexFile {
     public String cleanField(String str) {
         String cleanedField = null;
         if (str != null){
-            org.jsoup.nodes.Document doc = Jsoup.parse(str);
-            cleanedField = doc.body().text();
+            // this adds a line break instead of a paragraph
+            Whitelist whitelist = new Whitelist();
+            whitelist.addTags("p");
+            cleanedField = Jsoup.clean(str, whitelist);
+            cleanedField = cleanedField.replace("<p></p>", "");
+            cleanedField = cleanedField.replace("<p>", "");
+            cleanedField = cleanedField.replace("</p>", "\n");
+            cleanedField = cleanedField.trim();
+            
+            String regex = "\n ";
+
+            String strMatch = null;
+//            Pattern pattern = Pattern.compile(regex);
+//            Matcher matcher = pattern.matcher(cleanedField);
+//            while (matcher.find(0)) {
+            cleanedField = cleanedField.replace("\n ", "\n");
+            cleanedField = cleanedField.replace("\n\n", "\n");
+//            }
+
+//            org.jsoup.nodes.Document doc = Jsoup.parse(cleanedField);
+//            cleanedField = doc.body().text();
+
         }
         return cleanedField;
     }

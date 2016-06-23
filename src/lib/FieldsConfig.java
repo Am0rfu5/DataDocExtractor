@@ -50,18 +50,18 @@ public class FieldsConfig {
                 fieldsArray[5][3] = "";
         //
                 fieldsArray[6][0] = "Attorney_Name_Address";
-                fieldsArray[6][1] = "<td rowspan=\\\"7\\\" colspan=\\\"9\\\"[()</\\w\\s\\\"#&;=\\-:\\.,]*>";
-                fieldsArray[6][2] = "PHONE:";
+                fieldsArray[6][1] = "<td rowspan=\\\"7\\\" colspan=\\\"9\\\"[()</\\w\\s\\\"#&;=\\-:\\.,]*>[()</\\w\\s\\\"#&;=\\-:\\.,]*><br/>\\s*</p>\\s*</td>\\s*</tr>\\s*<tr valign=\\\"top\">";
+                fieldsArray[6][2] = "(?=(PHONE:([\\w\\s\\\"\\(\\)</#&;=\\-:\\.,>]*)PHONE:([\\w\\s\\\"\\(\\)</#&;=\\-:\\.,>]*))(PHONE:))";
                 fieldsArray[6][3] = "";
         //
 
                 fieldsArray[7][0] = "Attorney_Phone";
                 fieldsArray[7][1] = "PHONE:";
-                fieldsArray[7][2] = "PHONE:[\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]*PHONE:";
+                fieldsArray[7][2] = "PHONE:[\\p{L}()</\\w\\s\"#&;=\\-:\\.,>\\+]*PHONE:";
                 fieldsArray[7][3] = "";
 
                 fieldsArray[8][0] = "Client_Phone";
-                fieldsArray[8][1] = "PHONE:[\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]*PHONE:";
+                fieldsArray[8][1] = "PHONE:[\\p{L}()</\\w\\s\"#&;=\\-:\\.,>\\+]*PHONE:";
                 fieldsArray[8][2] = "PHONE:";
                 fieldsArray[8][3] = "";
                 
@@ -80,7 +80,7 @@ public class FieldsConfig {
                 fieldsArray[11][2] = "Money\\s*Check-point \\(Phase1\\):";
                 fieldsArray[11][3] = "";                
 
-                fieldsArray[12][0] = "Init_Budget";
+                fieldsArray[12][0] = "Money_Check_Point";
                 fieldsArray[12][1] = "Money\\s*Check-point\\s\\(Phase1\\):";
                 fieldsArray[12][2] = "Conflict\\s*Checks Done\\?";
                 fieldsArray[12][3] = "";
