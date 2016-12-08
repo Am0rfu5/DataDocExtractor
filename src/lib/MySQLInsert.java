@@ -10,6 +10,9 @@ package lib;
 //import org.gjt.mm.mysql.Driver;
 import java.sql.*;
 import org.apache.commons.lang3.StringEscapeUtils;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.ArrayList;
 
 /**
  *
@@ -72,4 +75,58 @@ public class MySQLInsert {
         
         return sqlInsert;
     }
+    
+    public List<String> getNames() throws Exception {
+        List<String> listNames = new ArrayList<>();
+ 
+        String myDriver = "com.mysql.jdbc.Driver";
+        String myUrl = "jdbc:mysql://localhost:3306/mg_ksheets?autoReconnect=true&useSSL=false";
+        Class.forName(myDriver);
+        String sqlSelect = "select invname from name_list";
+        
+        try (
+            Connection conn = DriverManager.getConnection(myUrl, "root", "3#daBird");
+            PreparedStatement statement = conn.prepareStatement(sqlSelect);
+            ResultSet rs = statement.executeQuery();
+        ) {    
+            while(rs.next()) {
+                listNames.add(rs.getString(1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        
+        return listNames;
+    }
+    
+    public void updateNames(String replaceName, String tableName, String fieldName) throws Exception {
+        Statement statement = null;
+        String myDriver = "com.mysql.jdbc.Driver";
+        String myUrl = "jdbc:mysql://localhost:3306/mg_ksheets?autoReconnect=true&useSSL=false";
+        String sqlUpdate = "";
+                
+        Class.forName(myDriver);
+        Connection conn = DriverManager.getConnection(myUrl, "root", "3#daBird");
+        
+        // Select names from table 
+        sqlUpdate = "update " + tableName + " set "+ fieldName + " = replace("+ 
+                fieldName +", '" + replaceName + " ' , \"\")";
+        
+        try {
+            
+            statement = conn.createStatement();
+            
+            try {
+                int sqlExecUpdate = statement.executeUpdate(sqlUpdate);
+//                System.out.println("Insert returned: " + (Integer.toString(sqlExecInsert)));
+            } finally {
+                statement.close();
+            }
+            
+        } finally {
+            conn.close();
+        }        
+    }
+    
 }

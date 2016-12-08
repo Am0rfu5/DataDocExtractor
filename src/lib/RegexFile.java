@@ -17,6 +17,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 import org.jsoup.safety.*;
+import org.pojava.datetime.*;
 
 /**
  *
@@ -61,6 +62,20 @@ public class RegexFile {
 
         }
         return cleanedField;
+    }
+    
+    public String fixDate(String probDate, String fileName){
+        String fixedDate = probDate;
+
+        try {
+            DateTime dt = new DateTime(probDate);
+            fixedDate = dt.toString("yyyy-MM-dd");
+        } catch (IllegalArgumentException e) { 
+//            throw new IllegalArgumentException("fixDate error: improper date for file " + fileName + ".html", e);
+            System.out.println("fixDate error: improper date for file: " + fileName + ".html");
+        }
+
+        return fixedDate;
     }
     
 }
