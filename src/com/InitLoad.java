@@ -5,8 +5,6 @@
  */
 package com;
 
-import lib.XWord2Text;
-import lib.Word2Text;
 import lib.XWordToHtml;
 import lib.OpenTextFile;
 import lib.RegexFile;
@@ -178,11 +176,12 @@ public class InitLoad extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton2)
+                        .addComponent(jButton6)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -205,7 +204,7 @@ public class InitLoad extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         XWord2Text wt = new XWord2Text();
-        String str = wt.XWord2TextConverter("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
+        String str = wt.XWord2TextConverter("/sample_html/564565.html");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -215,38 +214,37 @@ public class InitLoad extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         Word2Text wt = new Word2Text();
-        String str = wt.ConvertWord2Text("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
+        String str = wt.ConvertWord2Text("sample_html/564565.html");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         XWordToHtml wt = new XWordToHtml();
-        wt.XWordToHtmlConverter("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
+        wt.XWordToHtmlConverter("sample_html/564565.html");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         XWord2Text wt = new XWord2Text();
-        wt.XWord("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageDocx/1089886.1");
+        wt.XWord("sample_html/564565.html");
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        String tableName = "iManage";
-//        String tableName = "iManageTEST";
         // list files to be processed as array buffered
-//        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/imanTest");
-        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageHTML");
+        File folder = new File("C:/Projects/ksheetsxtract/ksheetsxtract//sample_html");
 
         Iterator it = FileUtils.iterateFiles(folder, null, false);
         while(it.hasNext()){
             
             // Open file
             OpenTextFile otf = new OpenTextFile();
-
             File  htmlFile = (((File) it.next()));
             String filePath = htmlFile.getAbsolutePath();
             String fileName = htmlFile.getName();
             fileName = fileName.replace(".html","");
             String htm = otf.OpenHTML(filePath);
-
+            String tableName = "iManage";
+            
+            
+            /* **** OLD REGEX PARSING METHOD
             // regex fields from document
             RegexFile rf = new RegexFile();
             String regexMatch = "([$@\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]*)";
@@ -255,18 +253,27 @@ public class InitLoad extends javax.swing.JFrame {
 
             for (int n = 0; n < fieldsArray.length; n++) {
                 String regex = fieldsArray[n][1] + regexMatch + fieldsArray[n][2];
-
                 fieldsArray[n][3] = rf.getMatch(htm, regex);
             }
-
+            
             // Clean and process fields
             for (int x = 0; x < fieldsArray.length; x++) {
                 fieldsArray[x][3] = rf.cleanField(fieldsArray[x][3]);
             }
-            
             fieldsArray[0][3] = rf.fixDate(fieldsArray[0][3], fileName);
+            */
             
-            //write matches to sql
+            //**************DM: NEW PARSING METHOD *****************
+            System.out.println("-------- Processing File: " + fileName + "--------");
+            HTMLDoc hDoc = new HTMLDoc(htm);
+            IManageRecord record = new IManageRecord(fileName);
+            record.LoadRecordDataFromHTMLDoc(hDoc);
+            String[][] fieldsArray = record.CreateFieldsArray();
+            record.Print();
+            System.out.println("----------------------------------------------------");
+            //*******************DM: WORKING END*****************
+            
+            //Write matches to sql
             MySQLInsert mysi = new MySQLInsert();
             String sqlInsert = mysi.SqlInsertPrepare(fieldsArray, tableName, fileName);
             try {
@@ -274,6 +281,7 @@ public class InitLoad extends javax.swing.JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
