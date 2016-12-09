@@ -20,30 +20,35 @@ import java.util.ArrayList;
  */
 public class MySQLInsert {
     
-    public void SqlInsert(String sqlInsert, String identifier) throws Exception {
+    //TODO: MOVE TO CONFIG FILE
+    private String username = "ksheetuser";
+    private String pword = "qwe123";
+    
+    public int SqlInsert(String sqlInsert, String identifier) throws Exception {
         // create a mysql database connection
         Statement statement = null;
         String myDriver = "com.mysql.jdbc.Driver";
         String myUrl = "jdbc:mysql://localhost:3306/mg_ksheets?autoReconnect=true&useSSL=false";
         Class.forName(myDriver);
-        Connection conn = DriverManager.getConnection(myUrl, "root", "3#daBird");
-        
+        int sqlExecInsert = 0;
         try {
             
+            Connection conn = DriverManager.getConnection(myUrl, this.username, this.pword);
             statement = conn.createStatement();
             
             try {
-                int sqlExecInsert = statement.executeUpdate(sqlInsert);
-//                System.out.println("Insert returned: " + (Integer.toString(sqlExecInsert)));
+                sqlExecInsert = statement.executeUpdate(sqlInsert);
             } catch (Exception e) {
                 throw new Exception("Error for field file: " + identifier + " with sql insert: " + sqlInsert, e);
             } finally {
                 statement.close();
             }
-            
-        } finally {
             conn.close();
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+        return sqlExecInsert;
     }
     
     public String SqlInsertPrepare(String[][] fieldsArray, String tableName, String fileName) {
@@ -85,7 +90,7 @@ public class MySQLInsert {
         String sqlSelect = "select invname from name_list";
         
         try (
-            Connection conn = DriverManager.getConnection(myUrl, "root", "3#daBird");
+            Connection conn = DriverManager.getConnection(myUrl, this.username, this.pword);
             PreparedStatement statement = conn.prepareStatement(sqlSelect);
             ResultSet rs = statement.executeQuery();
         ) {    
@@ -95,8 +100,6 @@ public class MySQLInsert {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        
         return listNames;
     }
     
@@ -107,7 +110,7 @@ public class MySQLInsert {
         String sqlUpdate = "";
                 
         Class.forName(myDriver);
-        Connection conn = DriverManager.getConnection(myUrl, "root", "3#daBird");
+        Connection conn = DriverManager.getConnection(myUrl, this.username, this.pword);
         
         // Select names from table 
         sqlUpdate = "update " + tableName + " set "+ fieldName + " = replace("+ 

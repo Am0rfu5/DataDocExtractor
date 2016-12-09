@@ -1,3 +1,7 @@
+package com;
+
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -7,18 +11,12 @@
  *
  * @author Am0rfu5
  */
-package lib;
+//package lib;
 
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
 import java.io.File;
-import org.apache.poi.POIXMLTextExtractor;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;

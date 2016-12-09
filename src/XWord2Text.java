@@ -1,4 +1,6 @@
-package lib;
+package com;
+
+//package lib;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
