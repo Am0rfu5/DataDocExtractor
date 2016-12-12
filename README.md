@@ -19,4 +19,6 @@ The DataDocExtractor currently supports the following document types:
 
 This is not a full working copy. It is only the core of the DataDocExtractor. It is intended to be used as a library or a base for a more generalized scraper.
 
- 
+## Contact
+
+If you'd like to contact me to get more information about the DataDocExtractor, you can reach me on GitHub or Twitter @Am0rfu5
