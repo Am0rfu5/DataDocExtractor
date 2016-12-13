@@ -229,8 +229,9 @@ public class InitLoad extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // list files to be processed as array buffered
-//        File folder = new File("/home/Am0rfu5/Documents/Consulting/Customers/company_name Group/NetBeansProjects/company_namegroup/CaseSheetsXtract/sample_html");
-        File folder = new File("/home/Am0rfu5/Documents/TalendWorkspace/MG_CASESHEETS_V1/data/CaseSheets/ksheets/iManageHTML");
+        // update this to the directory of the files to be processed
+//        File folder = new File("");
+        File folder = new File("");
 
         Iterator it = FileUtils.iterateFiles(folder, null, false);
         while(it.hasNext()){
@@ -243,26 +244,6 @@ public class InitLoad extends javax.swing.JFrame {
             fileName = fileName.replace(".html","");
             String htm = otf.OpenHTML(filePath);
             String tableName = "iManage_2016_12";
-            
-            
-            /* **** OLD REGEX PARSING METHOD
-            // regex fields from document
-            RegexFile rf = new RegexFile();
-            String regexMatch = "([$@\\p{L}()</\\w\\s\"#&;=\\-:\\.,>]*)";
-            FieldsConfig fc = new FieldsConfig(); 
-            String[][] fieldsArray = fc.FieldsArray();            
-
-            for (int n = 0; n < fieldsArray.length; n++) {
-                String regex = fieldsArray[n][1] + regexMatch + fieldsArray[n][2];
-                fieldsArray[n][3] = rf.getMatch(htm, regex);
-            }
-            
-            // Clean and process fields
-            for (int x = 0; x < fieldsArray.length; x++) {
-                fieldsArray[x][3] = rf.cleanField(fieldsArray[x][3]);
-            }
-            fieldsArray[0][3] = rf.fixDate(fieldsArray[0][3], fileName);
-            */
             
             //**************DM: NEW PARSING METHOD *****************
             System.out.println("-------- Processing File: " + fileName + "--------");
