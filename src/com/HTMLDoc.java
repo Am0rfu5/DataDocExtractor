@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com;
 
 import org.jsoup.Jsoup;
@@ -37,16 +32,7 @@ public class HTMLDoc {
         }
         return rows;
     }
-    /*
-    private Column[] setRow(int rowNum, String rowText){
-        String[] strArray = rowText.split("<td");
-        Column[] cols = new Column[strArray.length];
-        for (int i = 0; i < strArray.length; i++){
-            cols[i] = new Column(rowNum, rowText);
-        }
-        return cols;
-    }
-    */
+
     public int getRowCount(){
         return rowsArray.length;
     }
@@ -103,6 +89,5 @@ public class HTMLDoc {
         }
         return cleanedField;
     }
-    
-    
+        
 }

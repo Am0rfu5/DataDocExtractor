@@ -21,8 +21,8 @@ import java.util.ArrayList;
 public class MySQLInsert {
     
     //TODO: MOVE TO CONFIG FILE
-    private String username = "ksheetuser";
-    private String pword = "qwe123";
+    private String username = "root";
+    private String pword = "P34c3or$";
     
     public int SqlInsert(String sqlInsert, String identifier) throws Exception {
         // create a mysql database connection
